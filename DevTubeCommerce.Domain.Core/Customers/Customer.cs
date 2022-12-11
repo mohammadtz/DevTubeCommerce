@@ -1,47 +1,41 @@
 ﻿using DevTubeCommerce.Domain.Core.Base;
 using DevTubeCommerce.Domain.Core.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DevTubeCommerce.Domain.Core.Customers
+namespace DevTubeCommerce.Domain.Core.Customers;
+
+public class Customer : AggregateRoot<CustomerId>
 {
-    public class Customer : AggregateRoot<CustomerId>
+    public string FirstName { get; private set; } = null!;
+    public string LastName { get; private set; } = null!;
+    public string Mobile { get; private set; } = null!;
+
+    private readonly List<AddressInfo> _addressInfos = new List<AddressInfo>();
+    public IReadOnlyList<AddressInfo> AddressInfos => _addressInfos;
+
+    internal static Customer CreateNew(string firstName, string lastName, string mobile, List<AddressInfoData> addressList)
     {
-        public string FirstName { get; private set; }
-        public string LastName { get; private set; }
-        public string Mobile { get; private set; }
+        return new Customer(firstName, lastName, mobile, addressList);
+    }
 
-        private readonly List<AddressInfo> _addressInfoes = new List<AddressInfo>();
-        public IReadOnlyList<AddressInfo> AddressInfoes => _addressInfoes;
-
-        internal static Customer CreateNew(string firstName,string lastName, string mobile, List<AddressInfoData> addressList)
+    private void BuildAddressInfos(List<AddressInfoData> addressList)
+    {
+        foreach (var item in addressList)
         {
-            return new Customer(firstName, lastName, mobile, addressList);
+            var addressInfo = AddressInfo.CreateNew(Id, item.PostalCode, item.Address, item.Title);
+            _addressInfos.Add(addressInfo);
         }
+    }
 
-        private void BuildAddressInfoes(List<AddressInfoData> addressList)
-        {
-            foreach (var item in addressList)
-            {
-                var addressInfo = AddressInfo.CreateNew(Id, item.PostalCode, item.Address, item.Title);
-                _addressInfoes.Add(addressInfo);
-            }
-        }
+    public Customer(string firstName, string lastName, string mobile, List<AddressInfoData> addressList)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Mobile = mobile;
+        BuildAddressInfos(addressList);
+    }
 
-        public Customer(string firstName, string lastName, string mobile, List<AddressInfoData> addressList )
-        {
-            FirstName = firstName;
-            LastName = lastName;
-            Mobile = mobile;
-            BuildAddressInfoes(addressList);
-        }
+    private Customer()
+    {
 
-        private Customer()
-        {
-
-        }
     }
 }

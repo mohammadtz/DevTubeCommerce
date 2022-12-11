@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace DevTubeCommerce.Domain.Core.Shared;
 
-namespace DevTubeCommerce.Domain.Core.Shared
+public record class AddressInfoData
 {
-    public record class AddressInfoData
-    {
-        public string PostalCode { get; init; }
-        public string Address { get; init; }
-        public string Title { get; init; }
-    }
+    public string PostalCode { get; init; } = null!;
+    public string Address { get; init; } = null!;
+    public string Title { get; init; } = null!;
 }
